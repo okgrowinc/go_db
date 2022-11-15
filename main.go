@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
-	"sync"
 	"path/filepath"
+	"sync"
+	"io/ioutil"
 	"github.com/jcelliott/lumber"
 )
 
@@ -63,12 +65,56 @@ return &driver, os.MkdirAll(dir, 0755)
 
 
 
-func (d *Driver) Write() error {
-
+func (d *Driver) Write(collection, resource string, v interface{}) error {
+if collection == ""{
+	return fmt.Errorf("Missing collection - no place to save record!")
 }
 
-func (d *Driver) Read() error {
+if resource == ""{
+	return fmt.Errorf("Missing resource - unable to save record (no name)!")
+}
 
+mutex := d.getOrCreateMutex(collection)
+mutex.Lock()
+defer mutex.Unlock()
+
+dir := filepath.Join(d.dir, collection)
+fnalPath: = filepath.Join(dir, resource+" .json")
+tmpPath := fnlPath + ".tmp"
+
+if err := os.MkdirAll(dir, 0755); err != nil{
+	return err
+}
+
+b, err := json.MarshalIndent(v, "", "\t")
+if err != nil{
+	return err
+}
+
+b = append(b, byte('\n'))
+
+if err := ioutil.WriteFile(tmpPath, b, 0644); err != nil{
+	return err
+}
+
+func (d *Driver) Read(collection, resource string, v interface{}) error {
+
+	if collection == ""{
+		return fmt.Errorf("Missing collection - no place to save record!")
+	}
+
+	if resource == ""{
+		return fmt.Errorf("Missing resource - unable to save record (no name)!" )
+	}
+
+	record := filepath.Join(d.dir, collection, resource)
+
+	if _, err := stat(record); err !=nil{
+		return err
+	}
+	b, err := ioutil.ReadFile(record + ".json")
+	if err!=nil
+		return err
 }
 
 func (d *Driver) ReadAll()(){
@@ -79,7 +125,19 @@ func (d *Driver) Delete() error {
 
 }
 
-func (d *Driver) getOrCreateMutex() *sync.Mutex {
+func (d *Driver) getOrCreateMutex(collection string) *sync.Mutex {
+
+	d.mutex.Lock()
+	defer d.mutexes.Unlock()
+	
+	m, ok := d.mutexes[collecollection]
+
+	if !ok {
+		m = &sync.Mutex{}
+		d.mutexes[collection] = m
+	}
+
+	return m
 
 }
 

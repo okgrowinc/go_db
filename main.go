@@ -3,7 +3,59 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
+	"sync"
 )
+
+const Version = "1.0.1"
+
+type (
+	Logger interface {
+		Fatal(string, ...interface{})
+		Error(string, ...interface{})
+		Warn(string, ...interface{})
+		Info(string, ...interface{})
+		Debug(string, ...interface{})
+		Trace(string, ...interface{})
+	}
+
+	Driver struct {
+		mutex   sync.Mutex
+		mutexes map[string]*sync.Mutex
+		dir     string
+		log     Logger
+	}
+)
+
+type Options struct {
+	Logger
+}
+
+func New(dir string, options *Options) (*Driver, error) {
+	dir = filepath.Clean(dir)
+
+	opts := Options{}
+}
+
+func (d *Driver) Write() error {
+
+}
+
+func (d *Driver) Read() error {
+
+}
+
+func (d *Driver) ReadAll() {
+
+}
+
+func (d *Driver) Delete() error {
+
+}
+
+func (d *Driver) getOrCreateMutex() *sync.Mutex {
+
+}
 
 type Address struct {
 	City    string
@@ -58,7 +110,14 @@ func main() {
 		}
 		allusers = append(allusers, employeeFound)
 	}
-}	 
-fmt.Println((allusers))
+}
 
-db.Delete("user", "john")1 err !=
+//fmt.Println((allusers))
+
+//if err := db.Delete("user", "john")1 err != nil{
+//	fmt.Println("Error, err")
+//}
+
+//if err := db.Delete("user", ""); err != nil{
+//	fmt.Println(Erroe, err)
+//}

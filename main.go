@@ -6,7 +6,6 @@ import (
 	"os"
 	"sync"
 	"path/filepath"
-	"github.com/blend/go-sdk/stringutil"
 	"github.com/jcelliott/lumber"
 )
 
@@ -47,12 +46,22 @@ if options.Logger == nil{
 	opts.Logger = lumber.NewConsoleLogger((lumber.INFO))
 }
 
-driver := Driver(
+driver := Driver{
 	dir: dir,
 	mutexes: make(map[string])*sync.Mutex,
 	log: opts.Logger,
-)
 }
+
+if _, err := os.Stat(dir); err ==nil{
+	opts.Logger.Debug("Using '%s' (database already exists}\n", dir)
+	return &driver, nil
+}
+
+opts.Logger.Debug("Creating the database at '%s'...\n", dir)
+return &driver, os.MkdirAll(dir, 0755)
+}
+
+
 
 func (d *Driver) Write() error {
 
@@ -72,6 +81,13 @@ func (d *Driver) Delete() error {
 
 func (d *Driver) getOrCreateMutex() *sync.Mutex {
 
+}
+
+func stat(path string)(fi os.FileInfo, err error){
+	if fi, err = os.Stat(path); os.IsNotExist(err){
+		fi, err = os.Stat(path + ".json")
+	}
+	return
 }
 
 type Address struct {

@@ -3,8 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"path/filepath"
+	"os"
 	"sync"
+	"path/filepath"
+	"github.com/blend/go-sdk/stringutil"
+	"github.com/jcelliott/lumber"
 )
 
 const Version = "1.0.1"
@@ -31,10 +34,24 @@ type Options struct {
 	Logger
 }
 
-func New(dir string, options *Options) (*Driver, error) {
-	dir = filepath.Clean(dir)
+func New(dir string, options *Options)(*Driver, error){
+dir = filepath.Clean(dir)
 
-	opts := Options{}
+opts := Options{}
+
+if options != nil{
+	opts = *options
+}
+
+if options.Logger == nil{
+	opts.Logger = lumber.NewConsoleLogger((lumber.INFO))
+}
+
+driver := Driver(
+	dir: dir,
+	mutexes: make(map[string])*sync.Mutex,
+	log: opts.Logger,
+)
 }
 
 func (d *Driver) Write() error {
@@ -45,7 +62,7 @@ func (d *Driver) Read() error {
 
 }
 
-func (d *Driver) ReadAll() {
+func (d *Driver) ReadAll()(){
 
 }
 

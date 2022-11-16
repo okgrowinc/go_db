@@ -74,27 +74,31 @@ if resource == ""{
 	return fmt.Errorf("Missing resource - unable to save record (no name)!")
 }
 
-mutex := d.getOrCreateMutex(collection)
-mutex.Lock()
-defer mutex.Unlock()
+	mutex := d.getOrCreateMutex(collection)
+	mutex.Lock()
+	defer mutex.Unlock()
 
-dir := filepath.Join(d.dir, collection)
-fnalPath: = filepath.Join(dir, resource+" .json")
-tmpPath := fnlPath + ".tmp"
+	dir := filepath.Join(d.dir, collection)
+	fnalPath: = filepath.Join(dir, resource+" .json")
+	tmpPath := fnlPath + ".tmp"
 
-if err := os.MkdirAll(dir, 0755); err != nil{
-	return err
-}
+	if err := os.MkdirAll(dir, 0755); err != nil{
+		return err
+	}
 
-b, err := json.MarshalIndent(v, "", "\t")
-if err != nil{
-	return err
-}
+	b, err := json.MarshalIndent(v, "", "\t")
+	if err != nil{
+		return err
+	}
 
-b = append(b, byte('\n'))
+	b = append(b, byte('\n'))
 
-if err := ioutil.WriteFile(tmpPath, b, 0644); err != nil{
-	return err
+	if err := ioutil.WriteFile(tmpPath, b, 0644); err != nil{
+		return err
+	}
+
+	return os.Rename(tmpPath, fnlPath)
+
 }
 
 func (d *Driver) Read(collection, resource string, v interface{}) error {
@@ -115,7 +119,10 @@ func (d *Driver) Read(collection, resource string, v interface{}) error {
 	b, err := ioutil.ReadFile(record + ".json")
 	if err!=nil
 		return err
+
+	return json.Unmarshal(b, &v)	
 }
+
 
 func (d *Driver) ReadAll()(){
 

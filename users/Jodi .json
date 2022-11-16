@@ -1,0 +1,12 @@
+{
+	"Name": "Jodi",
+	"Age": 53,
+	"Contact": "23344333",
+	"Company": "OS Intelligent",
+	"Address": {
+		"City": "Pratt",
+		"State": "Kansas",
+		"Country": "United States of America",
+		"Pincode": 67120
+	}
+}

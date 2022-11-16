@@ -44,7 +44,7 @@ func New(dir string, options *Options) (*Driver, error) {
 		opts = *options
 	}
 
-	if options.Logger == nil {
+	if opts.Logger == nil {
 		opts.Logger = lumber.NewConsoleLogger((lumber.INFO))
 	}
 
@@ -65,11 +65,11 @@ func New(dir string, options *Options) (*Driver, error) {
 
 func (d *Driver) Write(collection, resource string, v interface{}) error {
 	if collection == "" {
-		return fmt.Errorf("Missing collection - no place to save record!")
+		return fmt.Errorf("missing collection - no place to save record")
 	}
 
 	if resource == "" {
-		return fmt.Errorf("Missing resource - unable to save record (no name)!")
+		return fmt.Errorf("missing resource - unable to save record (no name)")
 	}
 
 	mutex := d.getOrCreateMutex(collection)
@@ -102,11 +102,11 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 func (d *Driver) Read(collection, resource string, v interface{}) error {
 
 	if collection == "" {
-		return fmt.Errorf("Missing collection - unable to read!")
+		return fmt.Errorf("missing collection - unable to read!")
 	}
 
 	if resource == "" {
-		return fmt.Errorf("Missing resource - unable to read record (no name)!")
+		return fmt.Errorf("missing resource - unable to read record (no name)!")
 	}
 
 	record := filepath.Join(d.dir, collection, resource)
@@ -124,7 +124,7 @@ func (d *Driver) Read(collection, resource string, v interface{}) error {
 func (d *Driver) ReadAll(collection string) ([]string, error) {
 
 	if collection == "" {
-		return nil, fmt.Errorf("Missing collection - unable to read")
+		return nil, fmt.Errorf("missing collection - unable to read")
 	}
 	dir := filepath.Join(d.dir, collection)
 
@@ -158,7 +158,7 @@ func (d *Driver) Delete(collection, resource string) error {
 
 	switch fi, err := stat(dir); {
 	case fi == nil, err != nil:
-		return fmt.Errorf("unable to find file or directory named %v\n", path)
+		return fmt.Errorf("unable to find file or directory named %v", path)
 
 	case fi.Mode().IsDir():
 		return os.RemoveAll(dir)

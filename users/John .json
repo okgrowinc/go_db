@@ -1,0 +1,12 @@
+{
+	"Name": "John",
+	"Age": 55,
+	"Contact": "23344333",
+	"Company": "OS Intelligent",
+	"Address": {
+		"City": "Overland Park",
+		"State": "Kansas",
+		"Country": "United States of America",
+		"Pincode": 410013
+	}
+}
